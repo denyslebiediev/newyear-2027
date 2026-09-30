@@ -19,6 +19,7 @@ export type Leg = {
 export const CITIES = {
   kyiv: { name: 'Kyiv', country: 'Ukraine', lngLat: [30.52406, 50.45024] },
   chernivtsi: { name: 'Chernivtsi', country: 'Ukraine', lngLat: [25.93765, 48.28647] },
+  vinnytsia: { name: 'Vinnytsia', country: 'Ukraine', lngLat: [28.46798, 49.23202] },
   suceava: { name: 'Suceava', country: 'Romania', lngLat: [26.25226, 47.647] },
   clujNapoca: { name: 'Cluj-Napoca', country: 'Romania', lngLat: [23.58995, 46.76938] },
   budapest: { name: 'Budapest', country: 'Hungary', lngLat: [19.04024, 47.49788] },
@@ -55,5 +56,7 @@ export const LEGS: Leg[] = [
   { id: 9, from: 'budapest', to: 'clujNapoca', date: '2027-01-07', via: [ORADEA], borders: [{ ...B.bors, from: 'HU', to: 'RO' }] },
   { id: 10, from: 'clujNapoca', to: 'suceava', date: '2027-01-08', via: [], borders: [] },
   { id: 11, from: 'suceava', to: 'chernivtsi', date: '2027-01-09', via: [], borders: [{ ...B.porubne, from: 'RO', to: 'UA' }] },
-  { id: 12, from: 'chernivtsi', to: 'kyiv', date: '2027-01-10', via: [], borders: [] },
+  // The via keeps the leg in Ukraine: without it OSRM cuts ~120 km through Moldova (two extra border queues).
+  { id: 12, from: 'chernivtsi', to: 'vinnytsia', date: '2027-01-10', via: [{ name: 'Khmelnytskyi, Ukraine', lngLat: [27.25159, 49.38515] }], borders: [] }, // М-30 east of the city
+  { id: 13, from: 'vinnytsia', to: 'kyiv', date: null, via: [], borders: [] },
 ]
