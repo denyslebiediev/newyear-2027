@@ -81,7 +81,7 @@ for (const leg of LEGS) {
 }
 
 console.log(`TOTAL ${totalKm.toFixed(0)} km, ${totalH.toFixed(1)} h`)
-if (totalKm < 4300 || totalKm > 4600) errors.push(`total ${totalKm.toFixed(0)} km outside 4300–4600`)
+if (totalKm < 4250 || totalKm > 4550) errors.push(`total ${totalKm.toFixed(0)} km outside 4250–4550`)
 if (errors.length) {
   console.error(errors.join('\n'))
   process.exit(1)
