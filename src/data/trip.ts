@@ -44,7 +44,7 @@ const B = {
 } satisfies Record<string, Omit<NonNullable<Leg['border']>, 'from' | 'to'>>
 
 export const LEGS: Leg[] = [
-  { id: 1, from: 'kyiv', to: 'chernivtsi', date: null, via: [], border: null },
+  { id: 1, from: 'kyiv', to: 'chernivtsi', date: '2026-12-19', via: [], border: null },
   { id: 2, from: 'chernivtsi', to: 'suceava', date: null, via: [], border: { ...B.porubne, from: 'UA', to: 'RO' } },
   { id: 3, from: 'suceava', to: 'budapest', date: null, via: CLUJ_ORADEA, border: { ...B.bors, from: 'RO', to: 'HU' } },
   { id: 4, from: 'budapest', to: 'vienna', date: null, via: [], border: { ...B.hegyeshalom, from: 'HU', to: 'AT' } },
