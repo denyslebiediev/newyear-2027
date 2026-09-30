@@ -1,6 +1,6 @@
 # newyear-2027
 
-Interactive map of a New Year 2027 road trip: Kyiv → Chernivtsi → Suceava → Cluj-Napoca → Budapest → Vienna → Prague → Wrocław, then home via Vienna, Budapest and Cluj-Napoca, in 13 legs.
+Interactive map of a New Year 2027 road trip: Kyiv → Chernivtsi → Suceava → Cluj-Napoca → Budapest → Vienna → Prague → Wrocław, then home via Budapest and Cluj-Napoca, in 12 legs.
 
 **Site:** https://denyslebiediev.github.io/newyear-2027/
 

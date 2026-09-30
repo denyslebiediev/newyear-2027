@@ -39,6 +39,8 @@ const B = {
   mikulov: { name: 'Mikulov–Drasenhofen', lngLat: [16.6385, 48.7858], external: false },
   kralovec: { name: 'Královec–Lubawka', lngLat: KRALOVEC, external: false },
   gorzyczki: { name: 'Gorzyczki–Věřňovice', lngLat: [18.4069, 49.9363], external: false }, // PL A1 → CZ D1
+  lanzhot: { name: 'Lanžhot–Brodské', lngLat: [16.98714, 48.68670], external: false }, // D2 over the Morava
+  cunovo: { name: 'Čunovo–Rajka', lngLat: [17.17552, 48.01292], external: false }, // SK D2 → HU M15
 } satisfies Record<string, Omit<Leg['borders'][number], 'from' | 'to'>>
 
 export const LEGS: Leg[] = [
@@ -49,10 +51,9 @@ export const LEGS: Leg[] = [
   { id: 5, from: 'budapest', to: 'vienna', date: '2026-12-26', via: [], borders: [{ ...B.hegyeshalom, from: 'HU', to: 'AT' }] },
   { id: 6, from: 'vienna', to: 'prague', date: '2026-12-30', via: [], borders: [{ ...B.mikulov, from: 'AT', to: 'CZ' }] },
   { id: 7, from: 'prague', to: 'wroclaw', date: '2027-01-02', via: [], borders: [{ ...B.kralovec, from: 'CZ', to: 'PL' }] },
-  { id: 8, from: 'wroclaw', to: 'vienna', date: null, via: [], borders: [{ ...B.gorzyczki, from: 'PL', to: 'CZ' }, { ...B.mikulov, from: 'CZ', to: 'AT' }] },
-  { id: 9, from: 'vienna', to: 'budapest', date: null, via: [], borders: [{ ...B.hegyeshalom, from: 'AT', to: 'HU' }] },
-  { id: 10, from: 'budapest', to: 'clujNapoca', date: null, via: [ORADEA], borders: [{ ...B.bors, from: 'HU', to: 'RO' }] },
-  { id: 11, from: 'clujNapoca', to: 'suceava', date: null, via: [], borders: [] },
-  { id: 12, from: 'suceava', to: 'chernivtsi', date: '2027-01-08', via: [], borders: [{ ...B.porubne, from: 'RO', to: 'UA' }] },
-  { id: 13, from: 'chernivtsi', to: 'kyiv', date: '2027-01-08', via: [], borders: [] },
+  { id: 8, from: 'wroclaw', to: 'budapest', date: '2027-01-05', via: [], borders: [{ ...B.gorzyczki, from: 'PL', to: 'CZ' }, { ...B.lanzhot, from: 'CZ', to: 'SK' }, { ...B.cunovo, from: 'SK', to: 'HU' }] },
+  { id: 9, from: 'budapest', to: 'clujNapoca', date: null, via: [ORADEA], borders: [{ ...B.bors, from: 'HU', to: 'RO' }] },
+  { id: 10, from: 'clujNapoca', to: 'suceava', date: null, via: [], borders: [] },
+  { id: 11, from: 'suceava', to: 'chernivtsi', date: '2027-01-08', via: [], borders: [{ ...B.porubne, from: 'RO', to: 'UA' }] },
+  { id: 12, from: 'chernivtsi', to: 'kyiv', date: '2027-01-08', via: [], borders: [] },
 ]
