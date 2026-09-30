@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AttributionControl, Layer, Map, Marker, Source, type MapLayerMouseEvent, type MapRef, type MapStyleDataEvent } from '@vis.gl/react-maplibre'
-import type { ExpressionSpecification, Map as MLMap } from 'maplibre-gl'
+import type { ExpressionSpecification, GeoJSONSource, Map as MLMap } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { LEGS, ROUTES, STOPS, TRIP_BBOX, TRIP_LINE, pickLegId } from '../lib/legs'
@@ -87,6 +87,37 @@ function animate(ms: number, fn: (p: number) => void, done?: () => void) {
   return () => cancelAnimationFrame(raf)
 }
 
+// Flying arrows: the whole loop as Web-Mercator segments. Mercator length × 512·2^zoom = screen px at any latitude,
+// so spacing and speed are in real pixels. Inline maths, not MercatorCoordinate: maplibre-gl stays in its lazy chunk.
+const mercX = (lng: number) => (lng + 180) / 360
+const mercY = (lat: number) => (1 - Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360)) / Math.PI) / 2
+const unmerc = (x: number, y: number) => [x * 360 - 180, (360 / Math.PI) * Math.atan(Math.exp(Math.PI * (1 - 2 * y))) - 90]
+const SEGS = LEGS.flatMap(l => l.coords.slice(1).map(([lng, lat], i) => {
+  const ax = mercX(l.coords[i][0]), ay = mercY(l.coords[i][1]), bx = mercX(lng), by = mercY(lat)
+  return { id: l.id, ax, ay, bx, by, d0: 0, len: Math.hypot(bx - ax, by - ay), rot: (Math.atan2(by - ay, bx - ax) * 180) / Math.PI }
+}))
+let LOOP = 0
+for (const s of SEGS) { s.d0 = LOOP; LOOP += s.len }
+const ARROW_GAP = 110 // px apart at an integer zoom
+const ARROW_SPEED = 45 // px/s
+// N doubles per zoom level and divides the loop exactly: zooming in adds arrows between the old ones, and Kyiv → Kyiv wraps seamlessly.
+const ARROWS_Z0 = Math.max(1, Math.round((LOOP * 512) / ARROW_GAP))
+
+function arrowFeatures(map: MLMap, phase: number) {
+  const gap = LOOP / (ARROWS_Z0 * 2 ** Math.floor(map.getZoom()))
+  const b = map.getBounds()
+  const [x0, x1, y0, y1] = [mercX(b.getWest()), mercX(b.getEast()), mercY(b.getNorth()), mercY(b.getSouth())]
+  const features = []
+  for (const s of SEGS) {
+    if (Math.max(s.ax, s.bx) < x0 || Math.min(s.ax, s.bx) > x1 || Math.max(s.ay, s.by) < y0 || Math.min(s.ay, s.by) > y1) continue
+    for (let d = phase + Math.ceil((s.d0 - phase) / gap) * gap; d < s.d0 + s.len; d += gap) {
+      const t = (d - s.d0) / s.len
+      features.push({ type: 'Feature' as const, properties: { id: s.id, rot: s.rot }, geometry: { type: 'Point' as const, coordinates: unmerc(s.ax + t * (s.bx - s.ax), s.ay + t * (s.by - s.ay)) } })
+    }
+  }
+  return { type: 'FeatureCollection' as const, features }
+}
+
 const WEBGL2 = typeof document !== 'undefined' && !!document.createElement('canvas').getContext('webgl2')
 
 type Props = {
@@ -139,6 +170,27 @@ export default function TripMap({ hoveredId, selectedId, still, onHover, onSelec
     const cancel = animate(3000, p => map.getLayer('intro-draw') && map.setPaintProperty('intro-draw', 'line-gradient', draw(FROST, p)), finish)
     return () => { ctrl.abort(); cancel() }
   }, [loaded, introDone])
+
+  // Arrows fly round the whole loop, leg after leg. `still` freezes them and only re-lays them out when the camera moves.
+  useEffect(() => {
+    if (!loaded || !introDone) return
+    const map = mapRef.current!.getMap()
+    let phase = 0, raf = 0, last = performance.now()
+    const place = () => (map.getSource('arrows') as GeoJSONSource | undefined)?.setData(arrowFeatures(map, phase))
+    if (still) {
+      place()
+      map.on('move', place)
+      return () => { map.off('move', place) }
+    }
+    const tick = (t: number) => {
+      phase = (phase + (ARROW_SPEED * (t - last)) / 1000 / (512 * 2 ** map.getZoom())) % LOOP
+      last = t
+      place()
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [loaded, introDone, still, before])
 
   // Select: fly to the leg (or back to the whole trip) and draw the leg in.
   useEffect(() => {
@@ -217,13 +269,16 @@ export default function TripMap({ hoveredId, selectedId, still, onHover, onSelec
               paint={{ 'line-color': LEG_COLOR, 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 6, 9, 12], 'line-blur': 6, 'line-offset': LANE_OFFSET, 'line-opacity': legsOpacity * 0.35, 'line-opacity-transition': fade }} />
             <Layer id="legs-core" type="line" beforeId={before} layout={{ 'line-cap': 'round', 'line-join': 'round' }}
               paint={{ 'line-color': LEG_COLOR, 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 2, 9, 3.5], 'line-offset': LANE_OFFSET, 'line-opacity': legsOpacity, 'line-opacity-transition': fade }} />
-            <Layer id="legs-arrows" type="symbol" beforeId={before} minzoom={5}
-              layout={{ 'symbol-placement': 'line', 'symbol-spacing': 220, 'text-field': '›', 'text-font': ['Noto Sans Bold'], 'text-size': 16, 'text-keep-upright': false, 'text-allow-overlap': true, 'text-offset': ['interpolate', ['linear'], ['zoom'], 5, ['literal', [0, 0.12]], 9, ['literal', [0, 0.25]]] }}
-              paint={{ 'text-color': LEG_COLOR, 'text-halo-color': NAVY, 'text-halo-width': 1, 'text-opacity': introDone ? (dim ? 0.3 : 0.9) : 0 }} />
             <Layer id="legs-hover" type="line" beforeId={before} layout={{ 'line-cap': 'round', 'line-join': 'round' }}
               paint={{ 'line-color': LEG_COLOR, 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 4, 9, 6], 'line-offset': LANE_OFFSET, 'line-opacity': ['case', HOVER, 1, 0] }} />
             <Layer id="legs-hit" type="line" beforeId={before}
               paint={{ 'line-color': FROST, 'line-width': 12, 'line-offset': LANE_OFFSET, 'line-opacity': 0 }} />
+          </Source>
+          <Source id="arrows" type="geojson" data={EMPTY}>
+            {/* text-offset turns with text-rotate, so +y puts each arrow on its leg's right-hand lane. ignore-placement: moving arrows must not bump labels. */}
+            <Layer id="legs-arrows" type="symbol" beforeId={before} minzoom={5}
+              layout={{ 'text-field': '›', 'text-font': ['Noto Sans Bold'], 'text-size': 16, 'text-rotate': ['get', 'rot'], 'text-rotation-alignment': 'map', 'text-allow-overlap': true, 'text-ignore-placement': true, 'text-offset': ['interpolate', ['linear'], ['zoom'], 5, ['literal', [0, 0.12]], 9, ['literal', [0, 0.25]]] }}
+              paint={{ 'text-color': LEG_COLOR, 'text-halo-color': NAVY, 'text-halo-width': 1, 'text-opacity': introDone ? (dim ? 0.3 : 0.9) : 0 }} />
           </Source>
           <Source id="sel" type="geojson" lineMetrics data={selData}>
             <Layer id="sel-glow" type="line" beforeId={before} layout={{ 'line-cap': 'round', 'line-join': 'round' }}
