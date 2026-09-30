@@ -57,5 +57,5 @@ export const LEGS: Leg[] = [
   { id: 10, from: 'clujNapoca', to: 'suceava', date: '2027-01-08', via: [], borders: [] },
   // The via keeps the leg out of Moldova: without it OSRM cuts through it past Chernivtsi (two extra border queues).
   { id: 11, from: 'suceava', to: 'vinnytsia', date: '2027-01-09', via: [{ name: 'Khmelnytskyi, Ukraine', lngLat: [27.25159, 49.38515] }], borders: [{ ...B.porubne, from: 'RO', to: 'UA' }] }, // М-30 east of the city
-  { id: 12, from: 'vinnytsia', to: 'kyiv', date: null, via: [], borders: [] },
+  { id: 12, from: 'vinnytsia', to: 'kyiv', date: '2027-01-10', via: [], borders: [] },
 ]
