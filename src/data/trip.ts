@@ -45,8 +45,8 @@ const B = {
 
 export const LEGS: Leg[] = [
   { id: 1, from: 'kyiv', to: 'chernivtsi', date: '2026-12-19', via: [], border: null },
-  { id: 2, from: 'chernivtsi', to: 'suceava', date: null, via: [], border: { ...B.porubne, from: 'UA', to: 'RO' } },
-  { id: 3, from: 'suceava', to: 'budapest', date: null, via: CLUJ_ORADEA, border: { ...B.bors, from: 'RO', to: 'HU' } },
+  { id: 2, from: 'chernivtsi', to: 'suceava', date: '2026-12-20', via: [], border: { ...B.porubne, from: 'UA', to: 'RO' } },
+  { id: 3, from: 'suceava', to: 'budapest', date: '2026-12-20', via: CLUJ_ORADEA, border: { ...B.bors, from: 'RO', to: 'HU' } },
   { id: 4, from: 'budapest', to: 'vienna', date: null, via: [], border: { ...B.hegyeshalom, from: 'HU', to: 'AT' } },
   { id: 5, from: 'vienna', to: 'prague', date: null, via: [], border: { ...B.mikulov, from: 'AT', to: 'CZ' } },
   { id: 6, from: 'prague', to: 'karlovyVary', date: null, via: [], border: null },
