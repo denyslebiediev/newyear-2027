@@ -46,16 +46,16 @@ const B = {
 
 export const LEGS: Leg[] = [
   { id: 1, from: 'kyiv', to: 'chernivtsi', date: '2026-12-19', via: [], borders: [] },
-  { id: 2, from: 'chernivtsi', to: 'suceava', date: '2026-12-20', via: [], borders: [{ ...B.porubne, from: 'UA', to: 'RO' }] },
-  { id: 3, from: 'suceava', to: 'clujNapoca', date: '2026-12-20', via: [], borders: [] },
-  { id: 4, from: 'clujNapoca', to: 'budapest', date: '2026-12-23', via: [ORADEA], borders: [{ ...B.bors, from: 'RO', to: 'HU' }] },
-  { id: 5, from: 'budapest', to: 'vienna', date: '2026-12-26', via: [], borders: [{ ...B.hegyeshalom, from: 'HU', to: 'AT' }] },
-  { id: 6, from: 'vienna', to: 'prague', date: '2026-12-30', via: [], borders: [{ ...B.mikulov, from: 'AT', to: 'CZ' }] },
-  { id: 7, from: 'prague', to: 'wroclaw', date: '2027-01-02', via: [], borders: [{ ...B.kralovec, from: 'CZ', to: 'PL' }] },
-  { id: 8, from: 'wroclaw', to: 'budapest', date: '2027-01-05', via: [], borders: [{ ...B.gorzyczki, from: 'PL', to: 'CZ' }, { ...B.lanzhot, from: 'CZ', to: 'SK' }, { ...B.cunovo, from: 'SK', to: 'HU' }] },
-  { id: 9, from: 'budapest', to: 'clujNapoca', date: '2027-01-07', via: [ORADEA], borders: [{ ...B.bors, from: 'HU', to: 'RO' }] },
-  { id: 10, from: 'clujNapoca', to: 'suceava', date: '2027-01-08', via: [], borders: [] },
+  // The via keeps the main Porubne–Siret crossing and the DN17: OSRM's fastest takes the small Krasnoilsk crossing and the Prislop pass on minor roads.
+  { id: 2, from: 'chernivtsi', to: 'clujNapoca', date: '2026-12-20', via: [{ name: 'Ilișești, Romania', lngLat: [26.05698, 47.6103] }], borders: [{ ...B.porubne, from: 'UA', to: 'RO' }] }, // DN17 west of Suceava
+  { id: 3, from: 'clujNapoca', to: 'budapest', date: '2026-12-23', via: [ORADEA], borders: [{ ...B.bors, from: 'RO', to: 'HU' }] },
+  { id: 4, from: 'budapest', to: 'vienna', date: '2026-12-26', via: [], borders: [{ ...B.hegyeshalom, from: 'HU', to: 'AT' }] },
+  { id: 5, from: 'vienna', to: 'prague', date: '2026-12-30', via: [], borders: [{ ...B.mikulov, from: 'AT', to: 'CZ' }] },
+  { id: 6, from: 'prague', to: 'wroclaw', date: '2027-01-02', via: [], borders: [{ ...B.kralovec, from: 'CZ', to: 'PL' }] },
+  { id: 7, from: 'wroclaw', to: 'budapest', date: '2027-01-05', via: [], borders: [{ ...B.gorzyczki, from: 'PL', to: 'CZ' }, { ...B.lanzhot, from: 'CZ', to: 'SK' }, { ...B.cunovo, from: 'SK', to: 'HU' }] },
+  { id: 8, from: 'budapest', to: 'clujNapoca', date: '2027-01-07', via: [ORADEA], borders: [{ ...B.bors, from: 'HU', to: 'RO' }] },
+  { id: 9, from: 'clujNapoca', to: 'suceava', date: '2027-01-08', via: [], borders: [] },
   // The via keeps the leg out of Moldova: without it OSRM cuts through it past Chernivtsi (two extra border queues).
-  { id: 11, from: 'suceava', to: 'vinnytsia', date: '2027-01-09', via: [{ name: 'Khmelnytskyi, Ukraine', lngLat: [27.25159, 49.38515] }], borders: [{ ...B.porubne, from: 'RO', to: 'UA' }] }, // М-30 east of the city
-  { id: 12, from: 'vinnytsia', to: 'kyiv', date: '2027-01-10', via: [], borders: [] },
+  { id: 10, from: 'suceava', to: 'vinnytsia', date: '2027-01-09', via: [{ name: 'Khmelnytskyi, Ukraine', lngLat: [27.25159, 49.38515] }], borders: [{ ...B.porubne, from: 'RO', to: 'UA' }] }, // М-30 east of the city
+  { id: 11, from: 'vinnytsia', to: 'kyiv', date: '2027-01-10', via: [], borders: [] },
 ]
