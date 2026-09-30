@@ -12,8 +12,8 @@ export type Leg = {
   date: string | null
   /** Forced route points. Keep them ON the through road, never on a city centre: centroids make OSRM do U-turns and spurs. */
   via: { name: string; lngLat: LngLat }[]
-  /** lngLat is where the road name changes at the border; build-routes.ts checks the route passes within 1 km. */
-  border: { name: string; from: string; to: string; lngLat: LngLat; external: boolean } | null
+  /** In crossing order. lngLat is on the road at the border; build-routes.ts checks the route passes within 1 km. */
+  borders: { name: string; from: string; to: string; lngLat: LngLat; external: boolean }[]
 }
 
 export const CITIES = {
@@ -40,19 +40,20 @@ const B = {
   hegyeshalom: { name: 'Hegyeshalom–Nickelsdorf', lngLat: [17.111, 47.9246], external: false },
   mikulov: { name: 'Mikulov–Drasenhofen', lngLat: [16.6385, 48.7858], external: false },
   kralovec: { name: 'Královec–Lubawka', lngLat: KRALOVEC, external: false },
-} satisfies Record<string, Omit<NonNullable<Leg['border']>, 'from' | 'to'>>
+  lanzhot: { name: 'Lanžhot–Brodské', lngLat: [16.98714, 48.68670], external: false }, // D2 over the Morava
+  cunovo: { name: 'Čunovo–Rajka', lngLat: [17.17552, 48.01292], external: false }, // SK D2 → HU M15
+} satisfies Record<string, Omit<Leg['borders'][number], 'from' | 'to'>>
 
 export const LEGS: Leg[] = [
-  { id: 1, from: 'kyiv', to: 'chernivtsi', date: '2026-12-19', via: [], border: null },
-  { id: 2, from: 'chernivtsi', to: 'suceava', date: '2026-12-20', via: [], border: { ...B.porubne, from: 'UA', to: 'RO' } },
-  { id: 3, from: 'suceava', to: 'budapest', date: '2026-12-20', via: CLUJ_ORADEA, border: { ...B.bors, from: 'RO', to: 'HU' } },
-  { id: 4, from: 'budapest', to: 'vienna', date: '2026-12-23', via: [], border: { ...B.hegyeshalom, from: 'HU', to: 'AT' } },
-  { id: 5, from: 'vienna', to: 'prague', date: '2026-12-28', via: [], border: { ...B.mikulov, from: 'AT', to: 'CZ' } },
-  { id: 6, from: 'prague', to: 'wroclaw', date: '2027-01-02', via: [], border: { ...B.kralovec, from: 'CZ', to: 'PL' } },
-  { id: 7, from: 'wroclaw', to: 'prague', date: null, via: [], border: { ...B.kralovec, from: 'PL', to: 'CZ' } },
-  { id: 8, from: 'prague', to: 'vienna', date: null, via: [], border: { ...B.mikulov, from: 'CZ', to: 'AT' } },
-  { id: 9, from: 'vienna', to: 'budapest', date: null, via: [], border: { ...B.hegyeshalom, from: 'AT', to: 'HU' } },
-  { id: 10, from: 'budapest', to: 'suceava', date: null, via: [...CLUJ_ORADEA].reverse(), border: { ...B.bors, from: 'HU', to: 'RO' } },
-  { id: 11, from: 'suceava', to: 'chernivtsi', date: '2027-01-08', via: [], border: { ...B.porubne, from: 'RO', to: 'UA' } },
-  { id: 12, from: 'chernivtsi', to: 'kyiv', date: '2027-01-08', via: [], border: null },
+  { id: 1, from: 'kyiv', to: 'chernivtsi', date: '2026-12-19', via: [], borders: [] },
+  { id: 2, from: 'chernivtsi', to: 'suceava', date: '2026-12-20', via: [], borders: [{ ...B.porubne, from: 'UA', to: 'RO' }] },
+  { id: 3, from: 'suceava', to: 'budapest', date: '2026-12-20', via: CLUJ_ORADEA, borders: [{ ...B.bors, from: 'RO', to: 'HU' }] },
+  { id: 4, from: 'budapest', to: 'vienna', date: '2026-12-23', via: [], borders: [{ ...B.hegyeshalom, from: 'HU', to: 'AT' }] },
+  { id: 5, from: 'vienna', to: 'prague', date: '2026-12-28', via: [], borders: [{ ...B.mikulov, from: 'AT', to: 'CZ' }] },
+  { id: 6, from: 'prague', to: 'wroclaw', date: '2027-01-02', via: [], borders: [{ ...B.kralovec, from: 'CZ', to: 'PL' }] },
+  { id: 7, from: 'wroclaw', to: 'prague', date: null, via: [], borders: [{ ...B.kralovec, from: 'PL', to: 'CZ' }] },
+  { id: 8, from: 'prague', to: 'budapest', date: null, via: [], borders: [{ ...B.lanzhot, from: 'CZ', to: 'SK' }, { ...B.cunovo, from: 'SK', to: 'HU' }] },
+  { id: 9, from: 'budapest', to: 'suceava', date: null, via: [...CLUJ_ORADEA].reverse(), borders: [{ ...B.bors, from: 'HU', to: 'RO' }] },
+  { id: 10, from: 'suceava', to: 'chernivtsi', date: '2027-01-08', via: [], borders: [{ ...B.porubne, from: 'RO', to: 'UA' }] },
+  { id: 11, from: 'chernivtsi', to: 'kyiv', date: '2027-01-08', via: [], borders: [] },
 ]

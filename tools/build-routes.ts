@@ -58,9 +58,9 @@ for (const leg of LEGS) {
   const route = data.routes[0], line = route.geometry.coordinates
   const name = `${leg.id} ${CITIES[leg.from].name} → ${CITIES[leg.to].name}`
 
-  if (leg.border) {
-    const d = Math.min(...line.map(p => km(p, leg.border!.lngLat)))
-    if (d > BORDER_KM) errors.push(`leg ${name}: misses ${leg.border.name} by ${d.toFixed(2)} km`)
+  for (const b of leg.borders) {
+    const d = Math.min(...line.map(p => km(p, b.lngLat)))
+    if (d > BORDER_KM) errors.push(`leg ${name}: misses ${b.name} by ${d.toFixed(2)} km`)
   }
   for (const wp of data.waypoints.slice(1, -1)) {
     for (let i = 1; i < line.length - 1; i++) {
@@ -81,7 +81,7 @@ for (const leg of LEGS) {
 }
 
 console.log(`TOTAL ${totalKm.toFixed(0)} km, ${totalH.toFixed(1)} h`)
-if (totalKm < 4400 || totalKm > 4700) errors.push(`total ${totalKm.toFixed(0)} km outside 4400–4700`)
+if (totalKm < 4300 || totalKm > 4600) errors.push(`total ${totalKm.toFixed(0)} km outside 4300–4600`)
 if (errors.length) {
   console.error(errors.join('\n'))
   process.exit(1)

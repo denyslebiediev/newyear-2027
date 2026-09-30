@@ -57,7 +57,8 @@ export function MapsLink({ leg, className = '' }: { leg: TripLeg; className?: st
   )
 }
 
-const borderWait = (leg: TripLeg) => leg.border?.external && <span className="text-muted"> + border wait</span>
+const queue = (leg: TripLeg) => leg.borders.some(b => b.external)
+const borderWait = (leg: TripLeg) => queue(leg) && <span className="text-muted"> + border wait</span>
 
 export function LegDetails({ leg }: { leg: TripLeg }) {
   const date = fmtDate(leg.date)
@@ -67,13 +68,15 @@ export function LegDetails({ leg }: { leg: TripLeg }) {
       <p className="text-sm tabular-nums">{fmtDuration(leg.min)} of driving{borderWait(leg)}</p>
       <dl className="mt-3 grid grid-cols-[4.5rem_1fr] gap-x-3 gap-y-1.5 text-sm">
         {date && (<><dt className="text-muted">Date</dt><dd>{date}</dd></>)}
-        <dt className="text-muted">Border</dt>
+        <dt className="text-muted">Border{leg.borders.length > 1 && 's'}</dt>
         <dd>
-          {leg.border ? (
-            <>
-              {leg.border.name}, {leg.border.from} → {leg.border.to}
-              {leg.border.external && <span className="block text-gold">EU external border, expect a queue</span>}
-            </>
+          {leg.borders.length ? (
+            leg.borders.map(b => (
+              <span key={b.name} className="block">
+                {b.name}, {b.from} → {b.to}
+                {b.external && <span className="block text-gold">EU external border, expect a queue</span>}
+              </span>
+            ))
           ) : (
             <span className="text-muted">None, {leg.fromCity.country} only</span>
           )}
@@ -122,9 +125,9 @@ export function LegList({ hoveredId, onHover, selectedId, onSelect }: Hover & Se
                     {leg.fromCity.name} <span aria-hidden="true">→</span><span className="sr-only">to</span> {leg.toCity.name}
                   </span>
                 </span>
-                {(date || leg.border?.external) && (
+                {(date || queue(leg)) && (
                   <span className="mt-0.5 block pl-6 text-xs text-muted">
-                    {date}{date && leg.border?.external && ', '}{leg.border?.external && 'plus a border queue'}
+                    {date}{date && queue(leg) && ', '}{queue(leg) && 'plus a border queue'}
                   </span>
                 )}
               </span>
@@ -175,7 +178,7 @@ export function LegPeek({ leg, onClose }: { leg: TripLeg; onClose: () => void })
       </div>
       <p className="mt-1 text-sm tabular-nums">
         {fmtKm(leg.km)}, {fmtDuration(leg.min)}{borderWait(leg)}
-        {leg.border && <span className="text-muted">, via {leg.border.name}</span>}
+        {leg.borders.length > 0 && <span className="text-muted">, via {leg.borders.map(b => b.name).join(' and ')}</span>}
       </p>
       <MapsLink leg={leg} className="mt-3" />
     </div>
