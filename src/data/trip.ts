@@ -47,7 +47,7 @@ export const LEGS: Leg[] = [
   { id: 1, from: 'kyiv', to: 'chernivtsi', date: '2026-12-19', via: [], borders: [] },
   { id: 2, from: 'chernivtsi', to: 'suceava', date: '2026-12-20', via: [], borders: [{ ...B.porubne, from: 'UA', to: 'RO' }] },
   { id: 3, from: 'suceava', to: 'clujNapoca', date: '2026-12-20', via: [], borders: [] },
-  { id: 4, from: 'clujNapoca', to: 'budapest', date: null, via: [ORADEA], borders: [{ ...B.bors, from: 'RO', to: 'HU' }] },
+  { id: 4, from: 'clujNapoca', to: 'budapest', date: '2026-12-23', via: [ORADEA], borders: [{ ...B.bors, from: 'RO', to: 'HU' }] },
   { id: 5, from: 'budapest', to: 'vienna', date: '2026-12-23', via: [], borders: [{ ...B.hegyeshalom, from: 'HU', to: 'AT' }] },
   { id: 6, from: 'vienna', to: 'prague', date: '2026-12-28', via: [], borders: [{ ...B.mikulov, from: 'AT', to: 'CZ' }] },
   { id: 7, from: 'prague', to: 'wroclaw', date: '2027-01-02', via: [], borders: [{ ...B.kralovec, from: 'CZ', to: 'PL' }] },
