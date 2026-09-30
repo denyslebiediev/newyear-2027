@@ -23,7 +23,6 @@ export const CITIES = {
   budapest: { name: 'Budapest', country: 'Hungary', lngLat: [19.04024, 47.49788] },
   vienna: { name: 'Vienna', country: 'Austria', lngLat: [16.37204, 48.20846] },
   prague: { name: 'Prague', country: 'Czechia', lngLat: [14.42097, 50.08745] },
-  karlovyVary: { name: 'Karlovy Vary', country: 'Czechia', lngLat: [12.87014, 50.23062] },
   wroclaw: { name: 'Wrocław', country: 'Poland', lngLat: [17.03068, 51.11005] },
 } satisfies Record<string, City>
 
@@ -49,12 +48,11 @@ export const LEGS: Leg[] = [
   { id: 3, from: 'suceava', to: 'budapest', date: '2026-12-20', via: CLUJ_ORADEA, border: { ...B.bors, from: 'RO', to: 'HU' } },
   { id: 4, from: 'budapest', to: 'vienna', date: '2026-12-23', via: [], border: { ...B.hegyeshalom, from: 'HU', to: 'AT' } },
   { id: 5, from: 'vienna', to: 'prague', date: '2026-12-28', via: [], border: { ...B.mikulov, from: 'AT', to: 'CZ' } },
-  { id: 6, from: 'prague', to: 'karlovyVary', date: null, via: [], border: null },
-  { id: 7, from: 'karlovyVary', to: 'wroclaw', date: null, via: [{ name: 'Královec, Czechia', lngLat: KRALOVEC }], border: { ...B.kralovec, from: 'CZ', to: 'PL' } },
-  { id: 8, from: 'wroclaw', to: 'prague', date: null, via: [], border: { ...B.kralovec, from: 'PL', to: 'CZ' } },
-  { id: 9, from: 'prague', to: 'vienna', date: null, via: [], border: { ...B.mikulov, from: 'CZ', to: 'AT' } },
-  { id: 10, from: 'vienna', to: 'budapest', date: null, via: [], border: { ...B.hegyeshalom, from: 'AT', to: 'HU' } },
-  { id: 11, from: 'budapest', to: 'suceava', date: null, via: [...CLUJ_ORADEA].reverse(), border: { ...B.bors, from: 'HU', to: 'RO' } },
-  { id: 12, from: 'suceava', to: 'chernivtsi', date: null, via: [], border: { ...B.porubne, from: 'RO', to: 'UA' } },
-  { id: 13, from: 'chernivtsi', to: 'kyiv', date: null, via: [], border: null },
+  { id: 6, from: 'prague', to: 'wroclaw', date: null, via: [], border: { ...B.kralovec, from: 'CZ', to: 'PL' } },
+  { id: 7, from: 'wroclaw', to: 'prague', date: null, via: [], border: { ...B.kralovec, from: 'PL', to: 'CZ' } },
+  { id: 8, from: 'prague', to: 'vienna', date: null, via: [], border: { ...B.mikulov, from: 'CZ', to: 'AT' } },
+  { id: 9, from: 'vienna', to: 'budapest', date: null, via: [], border: { ...B.hegyeshalom, from: 'AT', to: 'HU' } },
+  { id: 10, from: 'budapest', to: 'suceava', date: null, via: [...CLUJ_ORADEA].reverse(), border: { ...B.bors, from: 'HU', to: 'RO' } },
+  { id: 11, from: 'suceava', to: 'chernivtsi', date: null, via: [], border: { ...B.porubne, from: 'RO', to: 'UA' } },
+  { id: 12, from: 'chernivtsi', to: 'kyiv', date: null, via: [], border: null },
 ]

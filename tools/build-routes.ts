@@ -3,7 +3,7 @@
 import { writeFile } from 'node:fs/promises'
 import { CITIES, LEGS, type LngLat } from '../src/data/trip.ts'
 
-const UA = 'newyear-2026 (+https://github.com/denyslebiediev/newyear-2026)'
+const UA = 'newyear-2027 (+https://github.com/denyslebiediev/newyear-2027)'
 const BORDER_KM = 1 // a crossing sits on the road, so a correct route passes within metres
 const TURN_DEG = 150 // sharper than this near a via = spur / U-turn
 const TURN_WINDOW_KM = 0.5
@@ -81,7 +81,7 @@ for (const leg of LEGS) {
 }
 
 console.log(`TOTAL ${totalKm.toFixed(0)} km, ${totalH.toFixed(1)} h`)
-if (totalKm < 4650 || totalKm > 4950) errors.push(`total ${totalKm.toFixed(0)} km outside 4650–4950`)
+if (totalKm < 4400 || totalKm > 4700) errors.push(`total ${totalKm.toFixed(0)} km outside 4400–4700`)
 if (errors.length) {
   console.error(errors.join('\n'))
   process.exit(1)
