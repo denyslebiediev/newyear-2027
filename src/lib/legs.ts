@@ -5,8 +5,8 @@ import routesJson from '../data/routes.json'
 type RouteProps = { id: number; km: number; min: number }
 export const ROUTES = routesJson as FeatureCollection<LineString, RouteProps>
 
-// OKLCH-stepped ice → aurora → coral → gold; same-road pairs (1/11, 3/9, 6/7…) stay far apart.
-export const LEG_COLORS = ['#7dd3fc', '#7bc9ff', '#85b3ff', '#90a6ff', '#9b99ff', '#a78bfa', '#d586e7', '#f986c7', '#ff8ea0', '#ffb753', '#fcd34d']
+// OKLCH-stepped ice → aurora → coral → gold; same-road pairs (1/12, 2/11, 7/8…) stay far apart.
+export const LEG_COLORS = ['#7dd3fc', '#7bc9ff', '#7ebfff', '#85b3ff', '#90a6ff', '#9b99ff', '#a78bfa', '#d586e7', '#f986c7', '#ff8ea0', '#ffb753', '#fcd34d']
 
 export type TripLeg = Leg & {
   fromCity: City
