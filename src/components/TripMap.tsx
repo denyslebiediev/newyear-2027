@@ -97,14 +97,13 @@ PTS.push(PTS[0])
 const SEGS = PTS.slice(1).map((b, i) => ({ id: b.id, ax: PTS[i].x, ay: PTS[i].y, bx: b.x, by: b.y, d0: 0, len: Math.hypot(b.x - PTS[i].x, b.y - PTS[i].y) }))
 let LOOP = 0
 for (const s of SEGS) { s.d0 = LOOP; LOOP += s.len }
-const ARROW_GAP = 85 // px apart at an integer zoom
 const ARROW_SPEED = 11 // px/s
 // Heading = chord from 16 px behind to 16 px ahead: arrows swing smoothly through bends instead of snapping at every vertex
 // (which also flicked them across the lane). Only the true U-turns at city stops still flip, under the city dot.
 const ARROW_TURN = 16
-// N doubles per zoom level from 5 (where the layer starts) and divides the loop exactly: zooming in adds arrows between the old ones,
-// and Kyiv → Kyiv wraps seamlessly.
-const ARROWS_Z5 = Math.max(1, Math.round((LOOP * 512 * 2 ** 5) / ARROW_GAP))
+// 10 arrows round the whole loop at zoom 5 (the overview, where the layer starts). The count doubles per zoom level, so zooming in
+// keeps the same on-screen spacing and adds arrows between the old ones, and Kyiv → Kyiv wraps seamlessly.
+const ARROWS_Z5 = 10
 
 /** Mercator point at distance d along the loop. */
 function at(d: number) {
