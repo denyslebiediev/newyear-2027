@@ -87,24 +87,37 @@ function animate(ms: number, fn: (p: number) => void, done?: () => void) {
   return () => cancelAnimationFrame(raf)
 }
 
-// Flying arrows: the whole loop as Web-Mercator segments. Mercator length × 512·2^zoom = screen px at any latitude,
-// so spacing and speed are in real pixels. Inline maths, not MercatorCoordinate: maplibre-gl stays in its lazy chunk.
+// Flying arrows: the whole loop as one closed Web-Mercator polyline, Kyiv → … → Kyiv. Mercator length × 512·2^zoom = screen px
+// at any latitude, so spacing and speed are in real pixels. Inline maths, not MercatorCoordinate: maplibre-gl stays in its lazy chunk.
 const mercX = (lng: number) => (lng + 180) / 360
 const mercY = (lat: number) => (1 - Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360)) / Math.PI) / 2
 const unmerc = (x: number, y: number) => [x * 360 - 180, (360 / Math.PI) * Math.atan(Math.exp(Math.PI * (1 - 2 * y))) - 90]
-const SEGS = LEGS.flatMap(l => l.coords.slice(1).map(([lng, lat], i) => {
-  const ax = mercX(l.coords[i][0]), ay = mercY(l.coords[i][1]), bx = mercX(lng), by = mercY(lat)
-  return { id: l.id, ax, ay, bx, by, d0: 0, len: Math.hypot(bx - ax, by - ay), rot: (Math.atan2(by - ay, bx - ax) * 180) / Math.PI }
-}))
+const PTS = LEGS.flatMap(l => l.coords.map(([lng, lat]) => ({ id: l.id, x: mercX(lng), y: mercY(lat) })))
+PTS.push(PTS[0])
+const SEGS = PTS.slice(1).map((b, i) => ({ id: b.id, ax: PTS[i].x, ay: PTS[i].y, bx: b.x, by: b.y, d0: 0, len: Math.hypot(b.x - PTS[i].x, b.y - PTS[i].y) }))
 let LOOP = 0
 for (const s of SEGS) { s.d0 = LOOP; LOOP += s.len }
-const ARROW_GAP = 110 // px apart at an integer zoom
-const ARROW_SPEED = 45 // px/s
-// N doubles per zoom level and divides the loop exactly: zooming in adds arrows between the old ones, and Kyiv → Kyiv wraps seamlessly.
-const ARROWS_Z0 = Math.max(1, Math.round((LOOP * 512) / ARROW_GAP))
+const ARROW_GAP = 85 // px apart at an integer zoom
+const ARROW_SPEED = 11 // px/s
+// Heading = chord from 16 px behind to 16 px ahead: arrows swing smoothly through bends instead of snapping at every vertex
+// (which also flicked them across the lane). Only the true U-turns at city stops still flip, under the city dot.
+const ARROW_TURN = 16
+// N doubles per zoom level from 5 (where the layer starts) and divides the loop exactly: zooming in adds arrows between the old ones,
+// and Kyiv → Kyiv wraps seamlessly.
+const ARROWS_Z5 = Math.max(1, Math.round((LOOP * 512 * 2 ** 5) / ARROW_GAP))
+
+/** Mercator point at distance d along the loop. */
+function at(d: number) {
+  d = ((d % LOOP) + LOOP) % LOOP
+  let lo = 0, hi = SEGS.length
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (SEGS[m].d0 <= d) lo = m; else hi = m }
+  const s = SEGS[lo], t = s.len ? (d - s.d0) / s.len : 0
+  return [s.ax + t * (s.bx - s.ax), s.ay + t * (s.by - s.ay)]
+}
 
 function arrowFeatures(map: MLMap, phase: number) {
-  const gap = LOOP / (ARROWS_Z0 * 2 ** Math.floor(map.getZoom()))
+  const zoom = map.getZoom(), px = 1 / (512 * 2 ** zoom)
+  const gap = LOOP / (ARROWS_Z5 * 2 ** (Math.max(5, Math.floor(zoom)) - 5))
   const b = map.getBounds()
   const [x0, x1, y0, y1] = [mercX(b.getWest()), mercX(b.getEast()), mercY(b.getNorth()), mercY(b.getSouth())]
   const features = []
@@ -112,7 +125,8 @@ function arrowFeatures(map: MLMap, phase: number) {
     if (Math.max(s.ax, s.bx) < x0 || Math.min(s.ax, s.bx) > x1 || Math.max(s.ay, s.by) < y0 || Math.min(s.ay, s.by) > y1) continue
     for (let d = phase + Math.ceil((s.d0 - phase) / gap) * gap; d < s.d0 + s.len; d += gap) {
       const t = (d - s.d0) / s.len
-      features.push({ type: 'Feature' as const, properties: { id: s.id, rot: s.rot }, geometry: { type: 'Point' as const, coordinates: unmerc(s.ax + t * (s.bx - s.ax), s.ay + t * (s.by - s.ay)) } })
+      const [ax, ay] = at(d - ARROW_TURN * px), [bx, by] = at(d + ARROW_TURN * px)
+      features.push({ type: 'Feature' as const, properties: { id: s.id, rot: (Math.atan2(by - ay, bx - ax) * 180) / Math.PI }, geometry: { type: 'Point' as const, coordinates: unmerc(s.ax + t * (s.bx - s.ax), s.ay + t * (s.by - s.ay)) } })
     }
   }
   return { type: 'FeatureCollection' as const, features }
