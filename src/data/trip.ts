@@ -52,8 +52,8 @@ export const LEGS: Leg[] = [
   { id: 6, from: 'vienna', to: 'prague', date: '2026-12-30', via: [], borders: [{ ...B.mikulov, from: 'AT', to: 'CZ' }] },
   { id: 7, from: 'prague', to: 'wroclaw', date: '2027-01-02', via: [], borders: [{ ...B.kralovec, from: 'CZ', to: 'PL' }] },
   { id: 8, from: 'wroclaw', to: 'budapest', date: '2027-01-05', via: [], borders: [{ ...B.gorzyczki, from: 'PL', to: 'CZ' }, { ...B.lanzhot, from: 'CZ', to: 'SK' }, { ...B.cunovo, from: 'SK', to: 'HU' }] },
-  { id: 9, from: 'budapest', to: 'clujNapoca', date: null, via: [ORADEA], borders: [{ ...B.bors, from: 'HU', to: 'RO' }] },
-  { id: 10, from: 'clujNapoca', to: 'suceava', date: null, via: [], borders: [] },
-  { id: 11, from: 'suceava', to: 'chernivtsi', date: '2027-01-08', via: [], borders: [{ ...B.porubne, from: 'RO', to: 'UA' }] },
-  { id: 12, from: 'chernivtsi', to: 'kyiv', date: '2027-01-08', via: [], borders: [] },
+  { id: 9, from: 'budapest', to: 'clujNapoca', date: '2027-01-07', via: [ORADEA], borders: [{ ...B.bors, from: 'HU', to: 'RO' }] },
+  { id: 10, from: 'clujNapoca', to: 'suceava', date: '2027-01-08', via: [], borders: [] },
+  { id: 11, from: 'suceava', to: 'chernivtsi', date: '2027-01-09', via: [], borders: [{ ...B.porubne, from: 'RO', to: 'UA' }] },
+  { id: 12, from: 'chernivtsi', to: 'kyiv', date: '2027-01-10', via: [], borders: [] },
 ]
