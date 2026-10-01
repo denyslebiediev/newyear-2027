@@ -43,8 +43,8 @@ const B = {
 export const LEGS: Leg[] = [
   { id: 1, from: 'kyiv', to: 'lviv', date: '2026-12-19', via: [], borders: [] },
   { id: 2, from: 'lviv', to: 'mukachevo', date: '2026-12-21', via: [], borders: [] },
-  { id: 3, from: 'mukachevo', to: 'budapest', date: null, via: [], borders: [{ ...B.luzhanka, from: 'UA', to: 'HU' }] },
-  { id: 4, from: 'budapest', to: 'vienna', date: '2026-12-26', via: [], borders: [{ ...B.hegyeshalom, from: 'HU', to: 'AT' }] },
+  { id: 3, from: 'mukachevo', to: 'budapest', date: '2026-12-22', via: [], borders: [{ ...B.luzhanka, from: 'UA', to: 'HU' }] },
+  { id: 4, from: 'budapest', to: 'vienna', date: '2026-12-25', via: [], borders: [{ ...B.hegyeshalom, from: 'HU', to: 'AT' }] },
   { id: 5, from: 'vienna', to: 'prague', date: '2026-12-30', via: [], borders: [{ ...B.mikulov, from: 'AT', to: 'CZ' }] },
   { id: 6, from: 'prague', to: 'wroclaw', date: '2027-01-02', via: [], borders: [{ ...B.kralovec, from: 'CZ', to: 'PL' }] },
   { id: 7, from: 'wroclaw', to: 'budapest', date: '2027-01-05', via: [], borders: [{ ...B.gorzyczki, from: 'PL', to: 'CZ' }, { ...B.lanzhot, from: 'CZ', to: 'SK' }, { ...B.cunovo, from: 'SK', to: 'HU' }] },
