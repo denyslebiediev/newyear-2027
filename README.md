@@ -1,6 +1,6 @@
 # newyear-2027
 
-Interactive map of a New Year 2027 road trip: Kyiv → Lviv → Mukachevo → Budapest → Vienna → Prague → Wrocław, then home via Budapest, Mukachevo and Lviv, in 10 legs.
+Interactive map of a New Year 2027 road trip: Kyiv → Lviv → Mukachevo → Budapest → Vienna → Prague → Wrocław, then home via Zakopane and Lviv, in 9 legs.
 
 **Site:** https://denyslebiediev.github.io/newyear-2027/
 
