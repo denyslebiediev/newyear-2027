@@ -13,7 +13,7 @@ export function TripHeader({ hoveredId, onHover, onReset }: Hover & { onReset?: 
   return (
     <header>
       <h1 className="font-display text-3xl leading-none font-semibold tracking-tight md:text-[2.5rem]">New Year 2027</h1>
-      <p className="mt-2 hidden text-[15px] text-muted md:block">A winter road trip from Kyiv to Prague and Wrocław, and home again.</p>
+      <p className="mt-2 hidden text-[15px] text-muted md:block">A winter road trip from Kyiv across Central Europe, and home again.</p>
       <p className="mt-3 font-display text-base leading-snug md:mt-4 md:text-xl">
         {fmtKm(TOTALS.km)} through {TOTALS.cities} cities in {TOTALS.countries} countries, about {hours} hours at the wheel, in {TOTALS.legs} legs.
       </p>
