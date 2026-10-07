@@ -41,6 +41,12 @@ export function TripHeader({ hoveredId, onHover, onReset }: Hover & { onReset?: 
   )
 }
 
+const Arrow = () => (
+  <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <path d="M6 3h7v7M13 3 4 12" />
+  </svg>
+)
+
 export function MapsLink({ leg, className = '' }: { leg: TripLeg; className?: string }) {
   return (
     <a
@@ -50,9 +56,7 @@ export function MapsLink({ leg, className = '' }: { leg: TripLeg; className?: st
       className={`inline-flex items-center gap-2 rounded-full bg-frost px-4 py-2 text-sm font-semibold text-navy transition-colors hover:bg-white ${className}`}
     >
       Open in Google Maps
-      <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <path d="M6 3h7v7M13 3 4 12" />
-      </svg>
+      <Arrow />
     </a>
   )
 }
@@ -75,6 +79,12 @@ export function LegDetails({ leg }: { leg: TripLeg }) {
               <span key={b.name} className="block">
                 {b.name}, {b.from} → {b.to}
                 {b.external && <span className="block text-gold">EU external border, expect a queue</span>}
+                {b.queueUrl && (
+                  <a href={b.queueUrl} target="_blank" rel="noopener" className="mt-0.5 inline-flex items-center gap-1.5 text-ice underline-offset-2 hover:underline">
+                    Check the live queue
+                    <Arrow />
+                  </a>
+                )}
               </span>
             ))
           ) : (

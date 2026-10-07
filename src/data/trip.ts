@@ -13,7 +13,7 @@ export type Leg = {
   /** Forced route points. Keep them ON the through road, never on a city centre: centroids make OSRM do U-turns and spurs. */
   via: { name: string; lngLat: LngLat }[]
   /** In crossing order. lngLat is on the road at the border; build-routes.ts checks the route passes within 1 km. */
-  borders: { name: string; from: string; to: string; lngLat: LngLat; external: boolean }[]
+  borders: { name: string; from: string; to: string; lngLat: LngLat; external: boolean; /** Live queue page for this direction */ queueUrl?: string }[]
 }
 
 export const CITIES = {
@@ -42,11 +42,11 @@ const B = {
 export const LEGS: Leg[] = [
   { id: 1, from: 'kyiv', to: 'lviv', date: '2026-12-19', via: [], borders: [] },
   { id: 2, from: 'lviv', to: 'mukachevo', date: '2026-12-21', via: [], borders: [] },
-  { id: 3, from: 'mukachevo', to: 'budapest', date: '2026-12-22', via: [], borders: [{ ...B.luzhanka, from: 'UA', to: 'HU' }] },
+  { id: 3, from: 'mukachevo', to: 'budapest', date: '2026-12-22', via: [], borders: [{ ...B.luzhanka, from: 'UA', to: 'HU', queueUrl: 'https://nakordoni.eu/en/stat/1/4/4' }] },
   { id: 4, from: 'budapest', to: 'vienna', date: '2026-12-25', via: [], borders: [{ ...B.hegyeshalom, from: 'HU', to: 'AT' }] },
   { id: 5, from: 'vienna', to: 'prague', date: '2026-12-30', via: [], borders: [{ ...B.mikulov, from: 'AT', to: 'CZ' }] },
   { id: 6, from: 'prague', to: 'wroclaw', date: '2027-01-02', via: [], borders: [{ ...B.kralovec, from: 'CZ', to: 'PL' }] },
   { id: 7, from: 'wroclaw', to: 'zakopane', date: '2027-01-05', via: [], borders: [] },
-  { id: 8, from: 'zakopane', to: 'lviv', date: '2027-01-08', via: [], borders: [{ ...B.korczowa, from: 'PL', to: 'UA' }] },
+  { id: 8, from: 'zakopane', to: 'lviv', date: '2027-01-08', via: [], borders: [{ ...B.korczowa, from: 'PL', to: 'UA', queueUrl: 'https://nakordoni.eu/en/stat/2/1/4' }] },
   { id: 9, from: 'lviv', to: 'kyiv', date: '2027-01-10', via: [], borders: [] },
 ]
